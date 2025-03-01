@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Lịch Khám</h2>
+<form action="{{ url_for('book_appointment') }}" method="POST">
+    <select name="doctor_id">
+        {% for doctor in doctors %}
+        <option value="{{ doctor.id }}">{{ doctor.name }} - {{ doctor.KhoaCongTac }}</option>
+        {% endfor %}
+    </select>
+    <input type="datetime-local" name="appointment_time" required>
+    <button type="submit">Đặt Lịch</button>
+</form>
+{% endblock %}

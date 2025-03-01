@@ -1,0 +1,44 @@
+body {
+    background: url("/static/images/logo.webp") no-repeat center center fixed;
+    background-size: 65;
+    background-position: top center;
+    background-color:#f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+   background: none;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.nav-tabs .nav-link {
+    color: white;
+    background: transparent;
+    border: none;
+}
+
+.nav-tabs .nav-link.active {
+    font-weight: bold;
+    border-bottom: 3px solid #fff;
+}
+
+input.form-control {
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+}
+
+button {
+    font-size: 16px;
+    font-weight: bold;
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Bác sĩ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Danh sách Bác sĩ</h1>
+
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Chuyên khoa</th>
+            <th>Thời gian khám</th>
+            <th>Hành động</th>
+        </tr>
+        {% for doctor in doctors %}
+        <tr>
+            <td>{{ doctor.id }}</td>
+            <td>{{ doctor.name }}</td>
+            <td>{{ doctor.specialty }}</td>
+            <td>{{ doctor.available_times }}</td>
+            <td>
+                <a href="{{ url_for('delete_doctor', id=doctor.id) }}" onclick="return confirm('Bạn có chắc muốn xóa bác sĩ này?');">Xóa</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Thêm Bác sĩ mới</h2>
+    <form action="{{ url_for('add_doctor') }}" method="POST">
+        <label for="name">Tên Bác sĩ:</label>
+        <input type="text" name="name" required>
+        
+        <label for="specialty">Chuyên khoa:</label>
+        <input type="text" name="specialty" required>
+        
+        <label for="available_times">Thời gian khám:</label>
+        <input type="text" name="available_times" required>
+        
+        <button type="submit">Thêm</button>
+    </form>
+
+    <br>
+    <a href="{{ url_for('dashboard') }}">Quay lại Dashboard</a>
+</body>
+</html>

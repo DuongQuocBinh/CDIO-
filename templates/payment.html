@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Thanh Toán</h2>
+<table>
+    <tr>
+        <th>Số Tiền</th>
+        <th>Trạng Thái</th>
+    </tr>
+    {% for payment in payments %}
+    <tr>
+        <td>{{ payment.amount }}</td>
+        <td>{{ payment.status }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

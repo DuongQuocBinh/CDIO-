@@ -1,0 +1,10 @@
+<!-- messages.html -->
+{% extends "base.html" %}
+{% block content %}
+<h2>Tin Nhắn</h2>
+<ul>
+    {% for message in messages %}
+    <li><strong>{{ message.sender_id }}</strong>: {{ message.content }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
