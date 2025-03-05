@@ -1,7 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from models.models import db, User, Doctor, Appointment, HealthTip, Payment, Message
-
-db = SQLAlchemy()
+from extensions import db
 
 # Model User
 class User(db.Model):

@@ -1,38 +1,36 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
 from auth import auth_bp
+from models import User, Doctor, Appointment
+from extensions import db, mysql  # Sử dụng db và mysql từ extensions.py
 from flask_mysqldb import MySQL
-from models import db, User, Doctor, Appointment, HealthTip, Payment, Message
-from extensions import mysql
 
 app = Flask(__name__)
 
+# Cấu hình từ file Config
 app.config.from_object(Config)
 
-#Cấu hình mysql
+# Cấu hình MySQL
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
 app.config['MYSQL_DB'] = 'healhub'
 
-mysql.init_app(app)  # Gắn MySQL vào app Flask
+# Cấu hình SQLAlchemy
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456@localhost/healhub'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Khởi tạo MySQL và SQLAlchemy
+mysql = MySQL()
+mysql.init_app(app)
+db.init_app(app)
 
 # Cấu hình session
 app.secret_key = "your_secret_key"
 
-# Khởi tạo SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456@localhost/healhub'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db=SQLAlchemy()
-
-db.init_app(app)
-
 # Đăng ký Blueprint
 app.register_blueprint(auth_bp)
-
 
 # Tạo database nếu chưa có
 with app.app_context():
@@ -92,34 +90,33 @@ def api_login():
     else:
         return jsonify({"message": "Sai tài khoản hoặc mật khẩu!", "status": "error"}), 401
 
-    # Đăng nhập trang web
-    @app.route('/login', methods=['POST'])
-    def login():
-        email = request.form.get("email")
-        password = request.form.get("password")
-        
-        if not email or not password:
-            flash("Vui lòng nhập email và mật khẩu!", "danger")
-            return redirect(url_for("home"))
+# Đăng nhập trang web
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.form.get("email")
+    password = request.form.get("password")
+    
+    if not email or not password:
+        flash("Vui lòng nhập email và mật khẩu!", "danger")
+        return redirect(url_for("home"))
 
-        user = User.query.filter_by(email=email).first()
-        if user and check_password_hash(user.password, password):
-            session['user_id'] = user.id
-            flash(f"Chào mừng {user.name}!", "success")
-            return redirect(url_for("dashboard"))
-        else:
-            flash("Sai tài khoản hoặc mật khẩu!", "danger")
-            return redirect(url_for("home"))
+    user = User.query.filter_by(email=email).first()
+    if user and check_password_hash(user.password, password):
+        session['user_id'] = user.id
+        flash(f"Chào mừng {user.name}!", "success")
+        return redirect(url_for("dashboard"))
+    else:
+        flash("Sai tài khoản hoặc mật khẩu!", "danger")
+        return redirect(url_for("home"))
 
 # Trang dashboard
 @app.route('/dashboard')
 def dashboard():
-    user_id = session.get('user_id') 
-    if 'user_id':
+    if 'user_id' in session:
         user = User.query.get(session['user_id'])
-    if user:
-        return render_template("dashboard.html", user=user)
-
+        if user:
+            return render_template("dashboard.html", user=user)
+    
     flash("Bạn cần đăng nhập để truy cập!", "warning")
     return redirect(url_for("home"))
 
@@ -142,7 +139,7 @@ def book_appointment():
 @app.route('/doctors')
 def list_doctors():
     doctors = Doctor.query.all()
-    return render_template("doctors.html", doctors=doctors)
+    return render_template("doctor.html", doctors=doctors)
 
 @app.route('/add_doctor', methods=['POST'])
 def add_doctor():
@@ -172,4 +169,4 @@ def logout():
     return redirect(url_for("home"))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True) 

@@ -1,13 +1,13 @@
 from flask import Blueprint, render_template, request, redirect, session, flash
 from flask_mysqldb import MySQL
 from werkzeug.security import check_password_hash
-from extensions import mysql 
+from extensions import db
 
 # Khai báo Blueprint
 auth_bp = Blueprint('auth', __name__)
 
 # Cấu hình MySQL sẽ được nhận từ app.py
-mysql = None  
+mysql = MySQL() 
 
 def init_mysql(app):
     global mysql
